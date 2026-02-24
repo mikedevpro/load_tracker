@@ -1,8 +1,8 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  reference_number: MyString
-  status: MyString
+  reference_number: REF-1001
+  status: booked
   pickup_date: 2026-02-24
   delivery_date: 2026-02-24
   origin_city: MyString
@@ -12,8 +12,8 @@ one:
   driver: one
 
 two:
-  reference_number: MyString
-  status: MyString
+  reference_number: REF-1002
+  status: in_transit
   pickup_date: 2026-02-24
   delivery_date: 2026-02-24
   origin_city: MyString
