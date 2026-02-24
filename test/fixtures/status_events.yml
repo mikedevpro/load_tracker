@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  status: MyString
+  occurred_at: 2026-02-24 06:38:11
+  note: MyString
+  load: one
+
+two:
+  status: MyString
+  occurred_at: 2026-02-24 06:38:11
+  note: MyString
+  load: two
