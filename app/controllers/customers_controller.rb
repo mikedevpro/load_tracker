@@ -1,4 +1,5 @@
 class CustomersController < ApplicationController
+  before_action :require_dispatcher!
   def index
     render json: Customer.order(:name)
   end

@@ -1,11 +1,20 @@
 class StatusEventsController < ApplicationController
   def index
     load = Load.find(params[:load_id])
+
+    if current_user.role == "driver" && load.driver_id != current_user.driver_id
+      return render json: { error: "Forbidden" }, status: :forbidden
+    end
+    
     render json: load.status_events.order(occurred_at: :desc)
   end
 
   def create
     load = Load.find(params[:load_id])
+
+    if current_user.role == "driver" && load.driver_id != current_user.driver_id
+      return render json: { error: "Forbidden" }, status: :forbidden
+    end
 
     event = load.status_events.new(status_event_params)
     event.occurred_at ||= Time.current

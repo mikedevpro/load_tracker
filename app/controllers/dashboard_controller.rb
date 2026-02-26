@@ -1,6 +1,8 @@
 class DashboardController < ApplicationController
   ACTIVE_STATUSES = %w[booked dispatched picked_up in_transit].freeze
 
+  before_action :require_dispatcher!
+  
   def show
     loads = Load.all
 

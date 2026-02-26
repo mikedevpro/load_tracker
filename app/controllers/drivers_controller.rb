@@ -1,4 +1,6 @@
 class DriversController < ApplicationController
+  before_action :require_dispatcher!
+  
   def index
     render json: Driver.order(:name)
   end

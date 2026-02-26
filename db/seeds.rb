@@ -13,6 +13,7 @@ puts "Seeding Load Tracker..."
 
 StatusEvent.delete_all
 Load.delete_all
+User.delete_all
 Driver.delete_all
 Customer.delete_all
 
@@ -94,7 +95,29 @@ statuses = %w[booked dispatched picked_up in_transit delivered canceled]
             else "Status update"
             end
     )
+
   end
 end
+
+User.delete_all
+
+User.create!(
+  email: "dispatcher@test.com",
+  password: "password",
+  password_confirmation: "password",
+  role: "dispatcher"
+)
+
+User.create!(
+  email: "driver@test.com",
+  password: "password",
+  password_confirmation: "password",
+  role: "driver",
+  driver: Driver.first
+)
+
+puts "✅ Users:"
+puts "Dispatcher login: dispatcher@test.com / password"
+puts "Driver login: driver@test.com / password"
 
 puts "✅ Seed complete: #{Customer.count} customers, #{Driver.count} drivers, #{Load.count} loads, #{StatusEvent.count} status events."

@@ -1,8 +1,17 @@
 Rails.application.routes.draw do
-  resources :customers, only: %i[index show create update destroy]
-  resources :drivers,   only: %i[index show create update destroy]
+  devise_for :users, defaults: { format: :json }, controllers: { sessions: "users/sessions" }
+
+  resources :customers
+  resources :drivers
+
+  get "/me", to: "me#show"
+  get "/health", to: "health#show"
+
   resources :loads do
-    resources :status_events, only: %i[create index]
+    collection do
+      get :active
+    end
+    resources :status_events, only: [:create, :index]
   end
 
   get "/dashboard", to: "dashboard#show"
