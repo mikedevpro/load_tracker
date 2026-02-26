@@ -51,7 +51,6 @@ group :development, :test do
   gem "rubocop-rails-omakase", require: false
 
   gem "sqlite3", ">= 2.1"
-
 end
 
 group :production do
