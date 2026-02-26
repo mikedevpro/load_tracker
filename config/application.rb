@@ -14,6 +14,10 @@ module LoadTracker
     # API-only
     config.api_only = true
 
+    config.active_record.encryption.primary_key = nil
+    config.active_record.encryption.deterministic_key = nil
+    config.active_record.encryption.key_derivation_salt = nil
+
     # Add back cookies + sessions for Devise (needed for React session cookies)
     config.middleware.use ActionDispatch::Cookies
     config.middleware.use ActionDispatch::Session::CookieStore
