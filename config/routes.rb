@@ -11,7 +11,7 @@ Rails.application.routes.draw do
     collection do
       get :active
     end
-    resources :status_events, only: [:create, :index]
+    resources :status_events, only: [ :create, :index ]
   end
 
   get "/dashboard", to: "dashboard#show"

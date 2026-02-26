@@ -5,7 +5,7 @@ class StatusEventsController < ApplicationController
     if current_user.role == "driver" && load.driver_id != current_user.driver_id
       return render json: { error: "Forbidden" }, status: :forbidden
     end
-    
+
     render json: load.status_events.order(occurred_at: :desc)
   end
 

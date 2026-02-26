@@ -48,7 +48,7 @@ statuses = %w[booked dispatched picked_up in_transit delivered canceled]
 # Create ~25 loads with a realistic spread
 25.times do |i|
   customer = customers.sample
-  driver = [drivers.sample, nil].sample # sometimes unassigned
+  driver = [ drivers.sample, nil ].sample # sometimes unassigned
 
   pickup = days_ago(rand(0..14))
   delivery = pickup + rand(1..4)
@@ -64,21 +64,21 @@ statuses = %w[booked dispatched picked_up in_transit delivered canceled]
     delivery_date: (status == "delivered" ? delivery : nil),
     origin_city: rand_city,
     dest_city: rand_city,
-    rate: [950, 1200, 1450, 1600, 1800, 2100, 2500].sample,
+    rate: [ 950, 1200, 1450, 1600, 1800, 2100, 2500 ].sample,
     customer: customer,
     driver: driver
   )
 
   # Build a believable status history
   timeline = case status
-             when "booked"      then ["booked"]
-             when "dispatched"  then ["booked", "dispatched"]
-             when "picked_up"   then ["booked", "dispatched", "picked_up"]
-             when "in_transit"  then ["booked", "dispatched", "picked_up", "in_transit"]
-             when "delivered"   then ["booked", "dispatched", "picked_up", "in_transit", "delivered"]
-             when "canceled"    then ["booked", "canceled"]
-             else [status]
-             end
+  when "booked"      then [ "booked" ]
+  when "dispatched"  then [ "booked", "dispatched" ]
+  when "picked_up"   then [ "booked", "dispatched", "picked_up" ]
+  when "in_transit"  then [ "booked", "dispatched", "picked_up", "in_transit" ]
+  when "delivered"   then [ "booked", "dispatched", "picked_up", "in_transit", "delivered" ]
+  when "canceled"    then [ "booked", "canceled" ]
+  else [ status ]
+  end
 
   timeline.each_with_index do |st, idx|
     occurred_at = (load.pickup_date.to_time + (idx * 4).hours)
@@ -95,7 +95,6 @@ statuses = %w[booked dispatched picked_up in_transit delivered canceled]
             else "Status update"
             end
     )
-
   end
 end
 

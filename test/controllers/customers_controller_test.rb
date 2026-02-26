@@ -1,6 +1,10 @@
 require "test_helper"
 
 class CustomersControllerTest < ActionDispatch::IntegrationTest
+  setup do
+    sign_in users(:dispatcher)
+  end
+
   test "destroy returns 422 when customer has loads" do
     customer = customers(:one)
 

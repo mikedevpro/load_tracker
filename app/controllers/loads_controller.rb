@@ -1,6 +1,6 @@
 class LoadsController < ApplicationController
-  before_action :require_dispatcher!, only: [:create, :update, :destroy]
-  before_action :set_load, only: [:show, :update, :destroy]
+  before_action :require_dispatcher!, only: [ :create, :update, :destroy ]
+  before_action :set_load, only: [ :show, :update, :destroy ]
 
   def index
     if current_user.role == "driver" && params[:driver_id].present? && params[:driver_id].to_i != current_user.driver_id
@@ -33,9 +33,9 @@ class LoadsController < ApplicationController
         "reference_number LIKE ? OR origin_city LIKE ? OR dest_city LIKE ?",
         q, q, q
     )
-  end
+    end
 
-  render json: loads.as_json(include: [:customer, :driver])
+  render json: loads.as_json(include: [ :customer, :driver ])
   end
 
   def show
@@ -43,7 +43,7 @@ class LoadsController < ApplicationController
       return render json: { error: "Forbidden" }, status: :forbidden
     end
 
-    render json: @load.as_json(include: [:customer, :driver, :status_events])
+    render json: @load.as_json(include: [ :customer, :driver, :status_events ])
   end
 
   def create
@@ -96,7 +96,7 @@ class LoadsController < ApplicationController
                 .where(status: active_statuses)
                 .order(pickup_date: :desc)
 
-    render json: loads.as_json(include: [:customer, :driver])
+    render json: loads.as_json(include: [ :customer, :driver ])
   end
 
   private

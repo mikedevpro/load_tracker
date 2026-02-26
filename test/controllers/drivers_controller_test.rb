@@ -1,6 +1,10 @@
 require "test_helper"
 
 class DriversControllerTest < ActionDispatch::IntegrationTest
+  setup do
+    sign_in users(:dispatcher)
+  end
+
   test "destroy nullifies load driver and returns 204" do
     driver = drivers(:one)
     load = loads(:one)

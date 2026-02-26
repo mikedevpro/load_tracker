@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::API
   include ActionController::Cookies
-  
+
   before_action :authenticate_user!
 
   def require_dispatcher!
