@@ -1,10 +1,20 @@
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
+  frontend_origins = ENV["FRONTEND_ORIGINS"]
+    .to_s
+    .split(",")
+    .map(&:strip)
+    .reject(&:empty?)
+
+  if frontend_origins.empty?
+    frontend_origins = [ENV.fetch("FRONTEND_ORIGIN", "http://localhost:5173")]
+  end
+
   allow do
-    origins "http://localhost:5173"
+    origins frontend_origins
 
     resource "*",
       headers: :any,
-      methods: [ :get, :post, :patch, :put, :delete, :options ],
+      methods: [:get, :post, :patch, :put, :delete, :options, :head],
       credentials: true
   end
 end
