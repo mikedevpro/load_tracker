@@ -23,12 +23,19 @@ if Rails.env.production?
     render_host = ENV["RENDER_EXTERNAL_HOSTNAME"].to_s.strip
     render_external = ENV["RENDER_EXTERNAL_URL"].to_s.strip
     heroku_app_name = ENV["HEROKU_APP_NAME"].to_s.strip
+    vercel_host = ENV["VERCEL_URL"].to_s.strip
+    vercel_branch_host = ENV["VERCEL_BRANCH_URL"].to_s.strip
+    frontend_host = ENV["FRONTEND_HOST"].to_s.strip
 
     has_frontend_origin = frontend_origins.present? ||
       frontend_origin.present? ||
       render_host.present? ||
       render_external.present? ||
-      heroku_app_name.present?
+      heroku_app_name.present? ||
+      vercel_host.present? ||
+      vercel_branch_host.present? ||
+      frontend_host.present? ||
+      ENV["ALLOW_VERCEL_ORIGINS"] == "true"
 
     missing_vars << "FRONTEND_ORIGINS or FRONTEND_ORIGIN (or RENDER_EXTERNAL_HOSTNAME/RENDER_EXTERNAL_URL/HEROKU_APP_NAME for fallback)" unless has_frontend_origin
   else

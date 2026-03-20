@@ -5,20 +5,40 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
     .map(&:strip)
     .reject(&:empty?)
 
-  if frontend_origins.empty?
-    legacy_frontend_origin = ENV["FRONTEND_ORIGIN"].to_s.strip
-    frontend_origins = [legacy_frontend_origin] unless legacy_frontend_origin.empty?
+  normalize_origin = ->(value) do
+    next if value.blank?
+
+    value = value.to_s.strip
+    next if value.empty?
+
+    if value.match?(%r{\Ahttps?://})
+      value
+    else
+      "https://#{value}"
+    end
   end
 
-  if frontend_origins.empty?
-    render_host = ENV["RENDER_EXTERNAL_HOSTNAME"] || ENV["RENDER_EXTERNAL_URL"] || ENV["HEROKU_APP_NAME"]
-    frontend_origins = ["https://#{render_host}"] if render_host.present?
+  legacy_frontend_origin = normalize_origin.call(ENV["FRONTEND_ORIGIN"])
+  frontend_origins << legacy_frontend_origin if legacy_frontend_origin
+
+  [ENV["RENDER_EXTERNAL_HOSTNAME"], ENV["RENDER_EXTERNAL_URL"], ENV["HEROKU_APP_NAME"], ENV["VERCEL_URL"], ENV["VERCEL_BRANCH_URL"], ENV["FRONTEND_HOST"]].each do |candidate|
+    next if candidate.to_s.blank?
+
+    normalized = normalize_origin.call(candidate)
+    frontend_origins << normalized if normalized
+  end
+
+  frontend_origins.compact!
+  frontend_origins.uniq!
+
+  if frontend_origins.empty? && Rails.env.production? && ENV["ALLOW_VERCEL_ORIGINS"] == "true"
+    frontend_origins = [/https:\/\/.*\.vercel\.app/]
   end
 
   if frontend_origins.empty?
     if Rails.env.production?
       Rails.logger.warn(
-        "No CORS origins configured. Set FRONTEND_ORIGINS (preferred) or FRONTEND_ORIGIN for cross-site credentialed requests."
+        "No CORS origins configured. Set FRONTEND_ORIGINS (preferred), FRONTEND_ORIGIN, FRONTEND_HOST, or allow via VERCEL_URL/VERCEL_BRANCH_URL."
       )
     else
       frontend_origins = ["http://localhost:5173"]
