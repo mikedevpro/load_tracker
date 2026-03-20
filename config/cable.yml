@@ -5,6 +5,8 @@ test:
   adapter: test
 
 production:
-  adapter: redis
-  url: <%= ENV.fetch("REDIS_URL") %>
+  adapter: <%= ENV["REDIS_URL"].to_s.strip.empty? ? "async" : "redis" %>
+  <% if ENV["REDIS_URL"].to_s.strip.present? %>
+  url: <%= ENV["REDIS_URL"] %>
+  <% end %>
   channel_prefix: load_tracker_production

@@ -4,10 +4,17 @@ if Rails.env.production?
   missing_vars << "DATABASE_URL (required for PostgreSQL production connection)" if ENV["DATABASE_URL"].to_s.strip.empty?
   skip_cors_check = ENV["SKIP_FRONTEND_ORIGIN_CHECK"] == "true"
 
+  action_cable_adapter = ENV["REDIS_URL"].to_s.strip.empty? ? "async" : "redis"
+  Rails.logger.info("Action Cable adapter configured as: #{action_cable_adapter}")
+
   redis_needed = ENV["SOLID_QUEUE_IN_PUMA"].to_s == "true" ||
     ENV["REDIS_ENABLED"].to_s == "true"
   if redis_needed && ENV["REDIS_URL"].to_s.strip.empty?
     missing_vars << "REDIS_URL (required by enabled queue/cable features)"
+  elsif ENV["REDIS_URL"].to_s.strip.empty?
+    Rails.logger.warn(
+      "REDIS_URL is not set; Action Cable will fall back to the `async` adapter in this deploy."
+    )
   end
 
   unless skip_cors_check
