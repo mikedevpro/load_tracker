@@ -6,7 +6,23 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
     .reject(&:empty?)
 
   if frontend_origins.empty?
-    frontend_origins = [ENV.fetch("FRONTEND_ORIGIN", "http://localhost:5173")]
+    legacy_frontend_origin = ENV["FRONTEND_ORIGIN"].to_s.strip
+    frontend_origins = [legacy_frontend_origin] unless legacy_frontend_origin.empty?
+  end
+
+  if frontend_origins.empty?
+    render_host = ENV["RENDER_EXTERNAL_HOSTNAME"] || ENV["RENDER_EXTERNAL_URL"] || ENV["HEROKU_APP_NAME"]
+    frontend_origins = ["https://#{render_host}"] if render_host.present?
+  end
+
+  if frontend_origins.empty?
+    if Rails.env.production?
+      Rails.logger.warn(
+        "No CORS origins configured. Set FRONTEND_ORIGINS (preferred) or FRONTEND_ORIGIN for cross-site credentialed requests."
+      )
+    else
+      frontend_origins = ["http://localhost:5173"]
+    end
   end
 
   allow do
