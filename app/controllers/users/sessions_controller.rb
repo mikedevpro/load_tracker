@@ -4,6 +4,7 @@ class Users::SessionsController < Devise::SessionsController
   # SPA + cookie sessions
   skip_before_action :verify_authenticity_token, raise: false
   skip_before_action :authenticate_user!, raise: false
+  before_action :normalize_sign_in_email, only: :create
 
   private
 
@@ -25,5 +26,18 @@ class Users::SessionsController < Devise::SessionsController
 
   def respond_to_on_destroy(_opts = {})
     render json: { ok: true }, status: :ok
+  end
+
+  def normalize_sign_in_email
+    email = params.dig(:user, :email)
+    email = params[:email] if email.nil?
+    return if email.blank?
+
+    normalized = email.to_s.strip.downcase
+    if params.dig(:user, :email).present?
+      params[:user][:email] = normalized
+    else
+      params[:email] = normalized
+    end
   end
 end
